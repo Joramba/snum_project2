@@ -62,7 +62,7 @@ export default function App() {
   const [aspect, setAspect] = useState<number | undefined>(16 / 9);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string>("");
-  const [predictionResult, setPredictionResult] = useState<string>("");
+  const [predictionResult, setPredictionResult] = useState<string[]>([]);
 
   const handleButtonClick = () => {
     if (fileInputRef.current) {
@@ -195,8 +195,8 @@ export default function App() {
       }
 
       const result = await response.json();
-      console.log(result.prediction);
-      setPredictionResult(result.prediction);
+      console.log(result.prediction[0]);
+      setPredictionResult(result.prediction[0]);
     } catch (error) {
       console.error("Error during file upload:", error);
     }
@@ -298,7 +298,7 @@ export default function App() {
               }
             />
           </Box>
-          <Box sx={{ display: "flex", flexDirection: "row", mb: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "row", mb: 2, gap: 4 }}>
             <TextField
               id="rotate-input"
               label={"Rotate:"}
@@ -309,9 +309,11 @@ export default function App() {
               }
             />
 
-            <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography>Result:</Typography>
-              <Typography>{predictionResult}</Typography>
+              {predictionResult.map((item, index) => (
+                <Typography key={index}>{item.trim()}</Typography>
+              ))}
             </Box>
           </Box>
 
