@@ -328,7 +328,7 @@ export default function App() {
               Toggle aspect {aspect ? "off" : "on"}
             </Button>
             <Button
-              disabled={predictionResult.length === 0}
+              disabled={!fileName}
               variant="contained"
               sx={{ mb: 2 }}
               onClick={onDownloadCropClick}
@@ -336,7 +336,7 @@ export default function App() {
               Download Crop
             </Button>
             <Button
-              disabled={predictionResult.length === 0}
+              disabled={!fileName}
               variant="contained"
               sx={{ mb: 2 }}
               onClick={onExportClick}
