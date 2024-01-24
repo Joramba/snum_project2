@@ -62,6 +62,7 @@ export default function App() {
   const [aspect, setAspect] = useState<number | undefined>(16 / 9);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string>("");
+  const [predictionResult, setPredictionResult] = useState<string>("");
 
   const handleButtonClick = () => {
     if (fileInputRef.current) {
@@ -137,6 +138,69 @@ export default function App() {
     hiddenAnchorRef.current!.href = blobUrlRef.current;
     hiddenAnchorRef.current!.click();
   }
+
+  const onExportClick = async () => {
+    const image = imgRef.current;
+    const previewCanvas = previewCanvasRef.current;
+    if (!image || !previewCanvas || !completedCrop) {
+      throw new Error("Crop canvas does not exist");
+    }
+
+    // This will size relative to the uploaded image
+    // size. If you want to size according to what they
+    // are looking at on screen, remove scaleX + scaleY
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const offscreen = new OffscreenCanvas(
+      completedCrop.width * scaleX,
+      completedCrop.height * scaleY
+    );
+
+    const ctx = offscreen.getContext("2d") as OffscreenCanvasRenderingContext2D;
+    if (!ctx) {
+      throw new Error("No 2d context");
+    }
+
+    // Now you can use ctx.drawImage as expected
+
+    ctx.drawImage(
+      previewCanvas,
+      0,
+      0,
+      previewCanvas.width,
+      previewCanvas.height,
+      0,
+      0,
+      offscreen.width,
+      offscreen.height
+    );
+
+    const blob = await offscreen.convertToBlob({
+      type: "image/png",
+    });
+
+    const formData = new FormData();
+    // Добавляем blob как файл
+    formData.append("file", blob, "crop.png");
+
+    try {
+      const response = await fetch("http://localhost:5000/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setPredictionResult(result.prediction);
+      alert(`Prediction: ${result.prediction}`);
+    } catch (error) {
+      console.error("Error during file upload:", error);
+    }
+  };
 
   useDebounceEffect(
     async () => {
@@ -292,9 +356,10 @@ export default function App() {
                 <Button variant="contained" onClick={onDownloadCropClick}>
                   Download Crop
                 </Button>
-                <Button variant="contained" onClick={() => {}}>
+                <Button variant="contained" onClick={onExportClick}>
                   Export to model
                 </Button>
+                <Typography>{predictionResult}</Typography>
               </Box>
               <a
                 href="#hidden"
