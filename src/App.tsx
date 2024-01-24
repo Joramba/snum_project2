@@ -359,7 +359,6 @@ export default function App() {
                 <Button variant="contained" onClick={onExportClick}>
                   Export to model
                 </Button>
-                <Typography>{predictionResult}</Typography>
               </Box>
               <a
                 href="#hidden"
@@ -373,6 +372,10 @@ export default function App() {
               >
                 Hidden download
               </a>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography>Result:</Typography>
+                <Typography>{predictionResult}</Typography>
+              </Box>
             </Box>
           </>
         )}
