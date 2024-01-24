@@ -195,8 +195,8 @@ export default function App() {
       }
 
       const result = await response.json();
+      console.log(result.prediction);
       setPredictionResult(result.prediction);
-      alert(`Prediction: ${result.prediction}`);
     } catch (error) {
       console.error("Error during file upload:", error);
     }
@@ -298,7 +298,7 @@ export default function App() {
               }
             />
           </Box>
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "row", mb: 2 }}>
             <TextField
               id="rotate-input"
               label={"Rotate:"}
@@ -308,7 +308,13 @@ export default function App() {
                 setRotate(Math.min(180, Math.max(-180, Number(e.target.value))))
               }
             />
+
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
+              <Typography>Result:</Typography>
+              <Typography>{predictionResult}</Typography>
+            </Box>
           </Box>
+
           <Box>
             <Button
               variant="contained"
@@ -372,10 +378,6 @@ export default function App() {
               >
                 Hidden download
               </a>
-              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
-                <Typography>Result:</Typography>
-                <Typography>{predictionResult}</Typography>
-              </Box>
             </Box>
           </>
         )}
