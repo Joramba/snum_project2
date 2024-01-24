@@ -309,15 +309,17 @@ export default function App() {
               }
             />
 
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <Typography>Result:</Typography>
-              {predictionResult.map((item, index) => (
-                <Typography key={index}>{item.trim()}</Typography>
-              ))}
-            </Box>
+            {predictionResult.length > 0 && (
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Typography>Result:</Typography>
+                {predictionResult.map((item, index) => (
+                  <Typography key={index}>{item.trim()}</Typography>
+                ))}
+              </Box>
+            )}
           </Box>
 
-          <Box>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 2, mt: 1 }}>
             <Button
               variant="contained"
               sx={{ mb: 2 }}
@@ -325,6 +327,34 @@ export default function App() {
             >
               Toggle aspect {aspect ? "off" : "on"}
             </Button>
+            <Button
+              disabled={predictionResult.length === 0}
+              variant="contained"
+              sx={{ mb: 2 }}
+              onClick={onDownloadCropClick}
+            >
+              Download Crop
+            </Button>
+            <Button
+              disabled={predictionResult.length === 0}
+              variant="contained"
+              sx={{ mb: 2 }}
+              onClick={onExportClick}
+            >
+              Export to model
+            </Button>
+            <a
+              href="#hidden"
+              ref={hiddenAnchorRef}
+              download
+              style={{
+                position: "absolute",
+                top: "-200vh",
+                visibility: "hidden",
+              }}
+            >
+              Hidden download
+            </a>
           </Box>
         </Box>
         {!!imgSrc && (
@@ -358,28 +388,6 @@ export default function App() {
                   height: completedCrop.height,
                 }}
               />
-            </Box>
-            <Box>
-              <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-                <Button variant="contained" onClick={onDownloadCropClick}>
-                  Download Crop
-                </Button>
-                <Button variant="contained" onClick={onExportClick}>
-                  Export to model
-                </Button>
-              </Box>
-              <a
-                href="#hidden"
-                ref={hiddenAnchorRef}
-                download
-                style={{
-                  position: "absolute",
-                  top: "-200vh",
-                  visibility: "hidden",
-                }}
-              >
-                Hidden download
-              </a>
             </Box>
           </>
         )}
